@@ -1,0 +1,6 @@
+<launch>
+
+<node pkg = "robot_car_ros" name="Ultrasonic" type="ultrasonic_sensor.py" output ="screen"/>
+<node pkg = "robot_car_ros" name="Driver" type="motor_driver.py" output ="screen"/>
+
+</launch>

@@ -1,0 +1,8 @@
+int64 ENABLE_A
+int64 ENABLE_B
+int64 dir1
+int64 dir2 
+int64 dir3
+int64 dir4
+int64 minDutyCycle
+int64 maxDutyCycle
