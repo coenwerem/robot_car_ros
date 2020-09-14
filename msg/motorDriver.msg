@@ -6,3 +6,4 @@ int64 dir3
 int64 dir4
 int64 minDutyCycle
 int64 maxDutyCycle
+int64 dutyCycle
