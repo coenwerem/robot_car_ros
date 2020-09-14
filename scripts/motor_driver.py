@@ -50,11 +50,11 @@ pwmA.start(driverDetails.minDutyCycle)
 pwmB.start(driverDetails.minDutyCycle)
 
 dc = driverDetails.dutyCycle = 0
+dc_ang = 0
 
 def turnMotor(dc):
 	pwmA.ChangeDutyCycle(dc)
 	pwmB.ChangeDutyCycle(dc)
-
 
 def forward(dc):
 	turnMotor(dc)
@@ -71,6 +71,19 @@ def backward(dc):
 	GPIO.output(driverDetails.dir3, False)
 	GPIO.output(driverDetails.dir4, True)
 
+def left(dc_ang):
+	turnMotor(dc_ang)
+	GPIO.output(driverDetails.dir1, False)
+	GPIO.output(driverDetails.dir2, False)
+	GPIO.output(driverDetails.dir3, True)
+	GPIO.output(driverDetails.dir4, False)
+
+def right(dc_ang):
+	turnMotor(dc_ang)
+	GPIO.output(driverDetails.dir1, True)
+	GPIO.output(driverDetails.dir2, False)
+	GPIO.output(driverDetails.dir3, False)
+	GPIO.output(driverDetails.dir4, False)
 
 def stop():
 	GPIO.output(driverDetails.dir1, False)
@@ -84,23 +97,32 @@ def stop():
 def callback(msg):
 	print("Velocity received.")
 
-	prev_vel = msg.linear.x
-	time.sleep(1)
-	current_vel = msg.linear.x
-	print("Previous Vel: %s") %prev_vel
-	print("Current Vel: %s") %current_vel
+	#pev_vel = msg.linear.x
+	#time.sleep(1)
+	#current_vel = msg.linear.x
+	#print("Previous Vel: %s") %prev_vel
+	#print("Current Vel: %s") %current_vel
 
-	dc = abs(int(((msg.linear.x-prev_vel)/0.22)*driverDetails.maxDutyCycle))
-	if msg.linear.x - prev_vel > 0:
+	dc = abs(int((msg.linear.x/0.22)*driverDetails.maxDutyCycle))
+	dc_ang = abs(int((msg.angular.z/2.84)*driverDetails.maxDutyCycle))
+
+	if msg.linear.x  > 0:
 		forward(dc)
 		#print("Current Vel: %s") %msg.linear.x
 		print("Robot moving forward.")
-		prev_vel = msg.linear.x
+		#prev_vel = msg.linear.x
 
-	elif msg.linear.x - prev_vel < 0:
+	elif msg.linear.x  < 0:
 		backward(dc)
 		print("Robot moving backward.")
-		prev_vel = msg.linear.x
+
+	elif msg.angular.z > 0:
+		left(dc_ang)
+		print("Robot moving left")
+
+	elif msg.angular.z < 0:
+		right(dc_ang)
+		print("Robot moving right")
 
 	else:
 		stop()
